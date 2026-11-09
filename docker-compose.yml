@@ -33,7 +33,6 @@ services:
       START_WITH_AUDIO_MUTED: ${START_WITH_AUDIO_MUTED:-true}
       START_WITH_VIDEO_MUTED: ${START_WITH_VIDEO_MUTED:-true}
     depends_on: [prosody]
-    networks: [meet.jitsi]
 
   prosody:
     image: jitsi/prosody:${JITSI_TAG:-stable}
@@ -48,7 +47,7 @@ services:
       JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
       JVB_AUTH_PASSWORD: ${SERVICE_PASSWORD_JVB}
     networks:
-      meet.jitsi:
+      default:
         aliases: [xmpp.meet.jitsi]
 
   jicofo:
@@ -58,7 +57,6 @@ services:
       <<: *common-env
       JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
     depends_on: [prosody]
-    networks: [meet.jitsi]
 
   jvb:
     image: jitsi/jvb:${JITSI_TAG:-stable}
@@ -71,11 +69,7 @@ services:
       JVB_PORT: 10000
       JVB_ADVERTISE_IPS: ${JVB_ADVERTISE_IPS:?set to the VPS public IP}
     depends_on: [prosody]
-    networks: [meet.jitsi]
 
 volumes:
   prosody-config:
   prosody-plugins:
-
-networks:
-  meet.jitsi:
