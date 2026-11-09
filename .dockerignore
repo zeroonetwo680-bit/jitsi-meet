@@ -1,0 +1,12 @@
+.git
+node_modules
+build
+libs
+ios
+android/app/build
+android/**/build
+android/.gradle
+tests
+*.md
+!README.md
+css/all.css

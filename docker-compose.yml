@@ -1,0 +1,83 @@
+# Coolify: New Resource -> Docker Compose (from Git repo) -> point to this file.
+# Set the domain on the "web" service (port 80) and fill the env vars in .env.example.
+# Open UDP 10000 on the VPS firewall (ufw allow 10000/udp).
+
+x-common-env: &common-env
+  TZ: ${TZ:-UTC}
+  XMPP_DOMAIN: meet.jitsi
+  XMPP_AUTH_DOMAIN: auth.meet.jitsi
+  XMPP_MUC_DOMAIN: muc.meet.jitsi
+  XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+  XMPP_SERVER: xmpp.meet.jitsi
+  JICOFO_AUTH_USER: focus
+  JVB_AUTH_USER: jvb
+  # Trainer must log in (moderator); students join as guests
+  ENABLE_AUTH: ${ENABLE_AUTH:-1}
+  ENABLE_GUESTS: ${ENABLE_GUESTS:-1}
+  AUTH_TYPE: ${AUTH_TYPE:-internal}
+  XMPP_GUEST_DOMAIN: ${XMPP_GUEST_DOMAIN:-guest.meet.jitsi}
+  ENABLE_AV_MODERATION: ${ENABLE_AV_MODERATION:-1}
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        JITSI_TAG: ${JITSI_TAG:-stable}
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      SERVICE_FQDN_WEB_80: ""
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL, e.g. https://meet.example.com}
+      DISABLE_HTTPS: 1
+      ENABLE_HTTP_REDIRECT: 0
+      XMPP_BOSH_URL_BASE: http://xmpp.meet.jitsi:5280
+      START_WITH_AUDIO_MUTED: ${START_WITH_AUDIO_MUTED:-true}
+      START_WITH_VIDEO_MUTED: ${START_WITH_VIDEO_MUTED:-true}
+    depends_on: [prosody]
+    networks: [meet.jitsi]
+
+  prosody:
+    image: jitsi/prosody:${JITSI_TAG:-stable}
+    restart: unless-stopped
+    expose: ["5222", "5347", "5280"]
+    volumes:
+      - prosody-config:/config
+      - prosody-plugins:/prosody-plugins-custom
+    environment:
+      <<: *common-env
+      PUBLIC_URL: ${PUBLIC_URL}
+      JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
+      JVB_AUTH_PASSWORD: ${SERVICE_PASSWORD_JVB}
+    networks:
+      meet.jitsi:
+        aliases: [xmpp.meet.jitsi]
+
+  jicofo:
+    image: jitsi/jicofo:${JITSI_TAG:-stable}
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
+    depends_on: [prosody]
+    networks: [meet.jitsi]
+
+  jvb:
+    image: jitsi/jvb:${JITSI_TAG:-stable}
+    restart: unless-stopped
+    ports:
+      - "10000:10000/udp"
+    environment:
+      <<: *common-env
+      JVB_AUTH_PASSWORD: ${SERVICE_PASSWORD_JVB}
+      JVB_PORT: 10000
+      JVB_ADVERTISE_IPS: ${JVB_ADVERTISE_IPS:?set to the VPS public IP}
+    depends_on: [prosody]
+    networks: [meet.jitsi]
+
+volumes:
+  prosody-config:
+  prosody-plugins:
+
+networks:
+  meet.jitsi:
