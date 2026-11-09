@@ -25,8 +25,9 @@ RUN mkdir -p /out/css /out/scripts \
  && cp resources/robots.txt /out/
 
 # ---------- Stage 2: official jitsi/web image + our custom frontend ----------
-ARG JITSI_TAG=stable
-FROM jitsi/web:${JITSI_TAG}
+# Keep this tag in sync with JITSI_TAG used for prosody/jicofo/jvb in docker-compose.yml.
+# (Not an ARG on purpose: Coolify's Dockerfile mode injects ARGs and breaks ARG-before-FROM.)
+FROM jitsi/web:stable
 
 # config.js / interface_config.js are generated from env vars by the image at start-up (/config),
 # so we only overlay the compiled frontend files.
