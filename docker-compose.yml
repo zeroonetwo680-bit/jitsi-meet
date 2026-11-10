@@ -8,7 +8,7 @@ x-common-env: &common-env
   XMPP_AUTH_DOMAIN: auth.meet.jitsi
   XMPP_MUC_DOMAIN: muc.meet.jitsi
   XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
-  XMPP_SERVER: xmpp.meet.jitsi
+  XMPP_SERVER: prosody
   JICOFO_AUTH_USER: focus
   JVB_AUTH_USER: jvb
   # Trainer must log in (moderator); students join as guests
@@ -29,7 +29,7 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL, e.g. https://meet.example.com}
       DISABLE_HTTPS: 1
       ENABLE_HTTP_REDIRECT: 0
-      XMPP_BOSH_URL_BASE: http://xmpp.meet.jitsi:5280
+      XMPP_BOSH_URL_BASE: http://prosody:5280
       START_WITH_AUDIO_MUTED: ${START_WITH_AUDIO_MUTED:-true}
       START_WITH_VIDEO_MUTED: ${START_WITH_VIDEO_MUTED:-true}
     depends_on: [prosody]
@@ -46,9 +46,6 @@ services:
       PUBLIC_URL: ${PUBLIC_URL}
       JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
       JVB_AUTH_PASSWORD: ${SERVICE_PASSWORD_JVB}
-    networks:
-      default:
-        aliases: [xmpp.meet.jitsi]
 
   jicofo:
     image: jitsi/jicofo:${JITSI_TAG:-stable}
