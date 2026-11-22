@@ -11,11 +11,15 @@ x-common-env: &common-env
   XMPP_SERVER: prosody
   JICOFO_AUTH_USER: focus
   JVB_AUTH_USER: jvb
-  # Trainer must log in (moderator); students join as guests
+  # Trainer signs in with a JWT issued by the Abaqera API (moderator); students join as guests
   ENABLE_AUTH: ${ENABLE_AUTH:-1}
   ENABLE_GUESTS: ${ENABLE_GUESTS:-1}
-  AUTH_TYPE: ${AUTH_TYPE:-internal}
+  AUTH_TYPE: ${AUTH_TYPE:-jwt}
   XMPP_GUEST_DOMAIN: ${XMPP_GUEST_DOMAIN:-guest.meet.jitsi}
+  JWT_APP_ID: ${JWT_APP_ID:-abaqera}
+  JWT_APP_SECRET: ${JWT_APP_SECRET:?set JWT_APP_SECRET, a long random string shared with the Abaqera API}
+  JWT_ACCEPTED_ISSUERS: ${JWT_ACCEPTED_ISSUERS:-abaqera}
+  JWT_ACCEPTED_AUDIENCES: ${JWT_ACCEPTED_AUDIENCES:-abaqera}
   ENABLE_AV_MODERATION: ${ENABLE_AV_MODERATION:-1}
 
 services:
