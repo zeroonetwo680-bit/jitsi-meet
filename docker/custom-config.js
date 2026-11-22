@@ -7,6 +7,7 @@ config.disableInitialGUM = false;
 config.toolbarButtons = [
     'microphone',
     'desktop',
+    'recording',
     'chat',
     'raisehand',
     'participants-pane',
