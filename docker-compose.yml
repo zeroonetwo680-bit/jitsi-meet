@@ -96,6 +96,7 @@ services:
       JIBRI_RECORDER_PASSWORD: ${SERVICE_PASSWORD_RECORDER}
       JIBRI_RECORDING_DIR: /config/recordings
       JIBRI_STRIP_DOMAIN_JID: muc
+      DISPLAY: ":0"
       DISPLAY_NAME: Recorder
     depends_on: [prosody]
 
