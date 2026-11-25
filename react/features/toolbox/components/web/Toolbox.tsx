@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from 'tss-react/mui';
 
 import { IReduxState } from '../../../app/types';
 import { isMobileBrowser } from '../../../base/environment/utils';
 import { getLocalParticipant, isLocalParticipantModerator } from '../../../base/participants/functions';
 import ContextMenu from '../../../base/ui/components/web/ContextMenu';
+import { getMediaPermissionHiddenButtons } from '../../../media-permissions/functions';
 import { isReactionsButtonEnabled, shouldDisplayReactionsButtons } from '../../../reactions/functions.web';
 import { isCCTabEnabled } from '../../../subtitles/functions.any';
 import { isTranscribing } from '../../../transcribing/functions';
@@ -98,12 +99,16 @@ export default function Toolbox({
     const localParticipant = useSelector(getLocalParticipant);
     const transcribing = useSelector(isTranscribing);
     const _isCCTabEnabled = useSelector(isCCTabEnabled);
+    const mediaPermissionHiddenButtons = useSelector(getMediaPermissionHiddenButtons, shallowEqual);
     // Read toolbar background color from config (if provided) or from props.
     const toolbarBackgroundColorFromConfig = useSelector((state: IReduxState) =>
         state['features/base/config'].toolbarConfig?.backgroundColor);
     const toolbarBackgroundColor = toolbarBackgroundColorProp || toolbarBackgroundColorFromConfig;
     // Do not convert to selector, it returns new array and will cause re-rendering of toolbox on every action.
-    const jwtDisabledButtons = getJwtDisabledButtons(transcribing, _isCCTabEnabled, localParticipant?.features);
+    const jwtDisabledButtons = [
+        ...getJwtDisabledButtons(transcribing, _isCCTabEnabled, localParticipant?.features),
+        ...mediaPermissionHiddenButtons
+    ];
 
     const reactionsButtonEnabled = useSelector(isReactionsButtonEnabled);
     const _shouldDisplayReactionsButtons = useSelector(shouldDisplayReactionsButtons);

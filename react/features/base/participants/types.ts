@@ -63,8 +63,10 @@ export interface ILocalParticipant extends IParticipant {
 }
 
 export interface IParticipantFeatures {
+    'auto-record'?: boolean | string;
     'branding'?: boolean | string;
     'calendar'?: boolean | string;
+    'camera'?: boolean | string;
     'create-polls'?: boolean | string;
     'file-upload'?: boolean | string;
     'flip'?: boolean | string;
@@ -73,6 +75,7 @@ export interface IParticipantFeatures {
     'live-translation'?: boolean | string;
     'livestreaming'?: boolean | string;
     'lobby'?: boolean | string;
+    'microphone'?: boolean | string;
     'moderation'?: boolean | string;
     'outbound-call'?: boolean | string;
     'recording'?: boolean | string;

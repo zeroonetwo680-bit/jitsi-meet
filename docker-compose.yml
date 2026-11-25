@@ -40,6 +40,8 @@ services:
       DISABLE_HTTPS: 1
       ENABLE_HTTP_REDIRECT: 0
       XMPP_BOSH_URL_BASE: http://prosody:5280
+      # Abaqera lecture login page, see docs/abaqera-lecture-login-page.md (empty = off)
+      TOKEN_AUTH_URL: ${TOKEN_AUTH_URL:-}
       START_WITH_AUDIO_MUTED: ${START_WITH_AUDIO_MUTED:-true}
       START_WITH_VIDEO_MUTED: ${START_WITH_VIDEO_MUTED:-true}
     depends_on: [prosody]
@@ -58,6 +60,9 @@ services:
       JVB_AUTH_PASSWORD: ${SERVICE_PASSWORD_JVB}
       JIBRI_XMPP_PASSWORD: ${SERVICE_PASSWORD_JIBRI}
       JIBRI_RECORDER_PASSWORD: ${SERVICE_PASSWORD_RECORDER}
+      # Moderator only from the token: context.user.moderator=true or affiliation owner/moderator -> moderator,
+      # any other token holder (students) -> plain member. See resources/prosody-plugins/mod_token_affiliation.lua
+      XMPP_MUC_MODULES: ${XMPP_MUC_MODULES:-token_affiliation}
 
   jicofo:
     image: jitsi/jicofo:${JITSI_TAG:-stable}
@@ -65,6 +70,9 @@ services:
     environment:
       <<: *common-env
       JICOFO_AUTH_PASSWORD: ${SERVICE_PASSWORD_JICOFO}
+      # Jicofo must not hand moderator to the first person in the room or to whoever is left:
+      # the token (via token_affiliation) is the only source of moderator rights.
+      ENABLE_AUTO_OWNER: ${ENABLE_AUTO_OWNER:-false}
     depends_on: [prosody]
 
   jvb:
@@ -80,7 +88,10 @@ services:
     depends_on: [prosody]
 
   jibri:
-    image: jitsi/jibri:${JITSI_TAG:-stable}
+    # Jitsi's Jibri plus the academy's finalize script (docker/jibri): it moves each finished recording into the
+    # organised recordings volume and registers it with the Abaqera API.
+    build:
+      context: docker/jibri
     restart: unless-stopped
     cap_add:
       - SYS_ADMIN
@@ -90,17 +101,48 @@ services:
     shm_size: 2gb
     volumes:
       - jibri-recordings:/config/recordings
+      - lecture-recordings:/recordings
     environment:
       <<: *common-env
       JIBRI_XMPP_PASSWORD: ${SERVICE_PASSWORD_JIBRI}
       JIBRI_RECORDER_PASSWORD: ${SERVICE_PASSWORD_RECORDER}
       JIBRI_RECORDING_DIR: /config/recordings
+      JIBRI_FINALIZE_RECORDING_SCRIPT_PATH: /opt/abaqera/finalize.sh
+      RECORDER_API_URL: ${RECORDER_API_URL:-}
+      RECORDER_SECRET: ${RECORDER_SECRET:-}
+      RECORDINGS_ROOT: /recordings
       JIBRI_STRIP_DOMAIN_JID: muc
       DISPLAY: ":0"
       DISPLAY_NAME: Recorder
     depends_on: [prosody]
 
+  # Plays recorded lectures to the dashboard: expiring signed links only. Give it its own domain in Coolify
+  # (e.g. recordings.geniusesksa.com) and put that address in the API as Jitsi__RecordingsUrl.
+  recordings:
+    build:
+      context: docker/recordings
+    restart: unless-stopped
+    environment:
+      SERVICE_FQDN_RECORDINGS_80: ""
+      RECORDER_SECRET: ${RECORDER_SECRET:-}
+    volumes:
+      - lecture-recordings:/recordings:ro
+
+  # Removes the files of recordings deleted in the dashboard, and makes the volume writable for Jibri.
+  recordings-cleaner:
+    build:
+      context: docker/recordings-cleaner
+    restart: unless-stopped
+    environment:
+      RECORDER_API_URL: ${RECORDER_API_URL:-}
+      RECORDER_SECRET: ${RECORDER_SECRET:-}
+      RECORDINGS_ROOT: /recordings
+    volumes:
+      - lecture-recordings:/recordings
+
 volumes:
   prosody-config:
   prosody-plugins:
   jibri-recordings:
+  # The organised library: courses/<course>/<cohort>/<date>_session-NN_<time>_<room>/ (see docs/lecture-recordings.md)
+  lecture-recordings:

@@ -5,6 +5,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { IReduxState } from '../../../../app/types';
 import { getLobbyConfig } from '../../../../lobby/functions';
+import { getMediaPermissionHiddenButtons } from '../../../../media-permissions/functions';
 import DeviceStatus from '../../../../prejoin/components/web/preview/DeviceStatus';
 import { isRoomNameEnabled } from '../../../../prejoin/functions.web';
 import Toolbox from '../../../../toolbox/components/web/Toolbox';
@@ -287,9 +288,11 @@ function mapStateToProps(state: IReduxState, ownProps: Partial<IProps>) {
     const { knocking } = state['features/lobby'];
     const { showHangUp: showHangUpLobby = true } = getLobbyConfig(state);
     const { showHangUp: showHangUpPrejoin = true } = prejoinConfig || {};
+    const mediaPermissionHiddenButtons = getMediaPermissionHiddenButtons(state);
     const premeetingButtons = (ownProps.thirdParty
         ? THIRD_PARTY_PREJOIN_BUTTONS
-        : PREMEETING_BUTTONS).filter((b: any) => !(hiddenPremeetingButtons || []).includes(b));
+        : PREMEETING_BUTTONS).filter((b: any) => !(hiddenPremeetingButtons || []).includes(b))
+        .filter((b: any) => !mediaPermissionHiddenButtons.includes(b));
 
     const shouldShowHangUp = knocking ? showHangUpLobby : showHangUpPrejoin;
 

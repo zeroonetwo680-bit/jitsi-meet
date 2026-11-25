@@ -1,0 +1,28 @@
+server {
+    listen 80;
+    server_name _;
+    root /recordings;
+
+    # Only recordings, only with a valid link: ?md5=<base64url md5 of "<expires><path> <secret>">&expires=<unix time>
+    location ~ \.mp4$ {
+        secure_link $arg_md5,$arg_expires;
+        secure_link_md5 "$secure_link_expires$uri ${RECORDER_SECRET}";
+
+        if ($secure_link = "") { return 403; }
+        if ($secure_link = "0") { return 410; }
+
+        add_header Cache-Control "private, no-store" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer" always;
+    }
+
+    location = /health {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    location / {
+        return 404;
+    }
+}

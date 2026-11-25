@@ -24,6 +24,7 @@ import {
     getAudioDeviceSelectionDialogProps,
     getVideoDeviceSelectionDialogProps
 } from '../../../device-selection/functions.web';
+import { isCameraAllowed } from '../../../media-permissions/functions';
 import { checkBlurSupport, checkVirtualBackgroundEnabled } from '../../../virtual-background/functions';
 import { iAmVisitor } from '../../../visitors/functions';
 import {
@@ -179,7 +180,7 @@ function _mapStateToProps(state: IReduxState, ownProps: any) {
             submit: (newState: any) => submitAudioDeviceSelectionTab(newState, isDisplayedOnWelcomePage),
             icon: IconVolumeUp
         });
-        !_iAmVisitor && tabs.push({
+        !_iAmVisitor && isCameraAllowed(state) && tabs.push({
             name: SETTINGS_TABS.VIDEO,
             component: VideoDeviceSelection,
             labelKey: 'settings.video',
@@ -203,7 +204,7 @@ function _mapStateToProps(state: IReduxState, ownProps: any) {
         });
     }
 
-    if (virtualBackgroundSupported && !_iAmVisitor && enableVirtualBackground) {
+    if (virtualBackgroundSupported && !_iAmVisitor && enableVirtualBackground && isCameraAllowed(state)) {
         tabs.push({
             name: SETTINGS_TABS.VIRTUAL_BACKGROUND,
             component: VirtualBackgroundTab,

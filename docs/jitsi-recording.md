@@ -32,15 +32,14 @@ holds around 900 hours: plan a clean-up or upload job. **Needed from the owner: 
 
 ### Start recording
 
-The frontend of this repo has no "auto-record" option, so the moderator (trainer) starts it with the **Record** button
-(now in the toolbar). Truly automatic recording of every lecture needs a server-side trigger (a small Prosody module or a service that
-asks Jicofo to start Jibri when a room is created): separate task, tell me if wanted.
+Automatic: with the dashboard switch "Record every lecture automatically" on (default), this repo's frontend starts recording when a
+moderator joins from a browser. Instructors on the mobile app's official Jitsi SDK have no such trigger and press **Record** themselves.
+A server-side trigger (a Prosody module asking Jicofo for Jibri) would cover them too: separate task.
 
-### Not done yet
+### Where the files go
 
-* Serving the finished files and giving them to the Abaqera API (the session's `recording_url`): needs a finalize script that
-  copies the file to storage and calls the API.
-* Verify on the server: start a lecture as a trainer, press Record, stop, find the `.mp4` in the volume and play it.
+Jibri's finalize script moves each file into an organised library and registers it with the Abaqera API, see
+[lecture-recordings.md](lecture-recordings.md). The `jibri-recordings` volume is only a temporary landing place.
 
 ## 2. Sign in from the browser with the Abaqera account
 

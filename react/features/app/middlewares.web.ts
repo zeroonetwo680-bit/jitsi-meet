@@ -3,6 +3,7 @@ import '../base/jwt/middleware.web';
 import '../base/config/middleware';
 import '../base/connection/middleware';
 import '../base/devices/middleware';
+import '../auto-record/middleware.web';
 import '../base/media/middleware';
 import '../deep-linking/middleware.web';
 import '../dynamic-branding/middleware';

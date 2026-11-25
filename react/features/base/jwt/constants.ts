@@ -4,8 +4,10 @@ import { ParticipantFeaturesKey } from '../participants/types';
  * The list of supported meeting features to enable/disable through jwt.
  */
 export const MEET_FEATURES: Record<string, ParticipantFeaturesKey> = {
+    AUTO_RECORD: 'auto-record',
     BRANDING: 'branding',
     CALENDAR: 'calendar',
+    CAMERA: 'camera',
     CREATE_POLLS: 'create-polls',
     FILE_UPLOAD: 'file-upload',
     FLIP: 'flip',
@@ -13,6 +15,7 @@ export const MEET_FEATURES: Record<string, ParticipantFeaturesKey> = {
     LIVESTREAMING: 'livestreaming',
     LIVE_TRANSLATION: 'live-translation',
     LOBBY: 'lobby',
+    MICROPHONE: 'microphone',
     MODERATION: 'moderation',
     OUTBOUND_CALL: 'outbound-call',
     RECORDING: 'recording',

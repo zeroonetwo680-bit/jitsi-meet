@@ -1,4 +1,5 @@
 import { IStore } from '../../app/types';
+import { isCameraAllowed } from '../../media-permissions/functions';
 import { IStateful } from '../app/types';
 import { isAdvancedAudioSettingsEnabled } from '../config/functions.any';
 import { isMobileBrowser } from '../environment/utils';
@@ -134,7 +135,7 @@ export function createPrejoinTracks() {
         APP.store.dispatch(setAudioMuted(true));
     }
 
-    if (!startWithVideoMuted && !startLowBandwidthMode) {
+    if (!startWithVideoMuted && !startLowBandwidthMode && isCameraAllowed(APP.store.getState())) {
         initialDevices.push(MEDIA_TYPE.VIDEO);
         requestedVideo = true;
     }

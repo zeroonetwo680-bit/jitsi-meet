@@ -143,6 +143,7 @@ import { openLeaveReasonDialog } from './react/features/conference/actions.web';
 import { appendSuffix } from './react/features/display-name/functions';
 import { maybeOpenFeedbackDialog, submitFeedback } from './react/features/feedback/actions';
 import { maybeSetLobbyChatMessageListener } from './react/features/lobby/actions.any';
+import { isCameraAllowed } from './react/features/media-permissions/functions';
 import { setNoiseSuppressionEnabled } from './react/features/noise-suppression/actions';
 import {
     hideNotification,
@@ -544,6 +545,7 @@ export default {
             startScreenSharing: config.startScreenSharing,
             startWithAudioMuted: getStartWithAudioMuted(state) || isUserInteractionRequiredForUnmute(state),
             startWithVideoMuted: getStartWithVideoMuted(state) || isUserInteractionRequiredForUnmute(state)
+                || !isCameraAllowed(state)
         };
         const connectionTimes = getJitsiMeetGlobalNSConnectionTimes();
         const startTime = window.performance.now();

@@ -10,6 +10,7 @@ import { sendAnalytics } from '../../analytics/functions';
 import { IStore } from '../../app/types';
 import { MEDIA_TYPE as AVM_MEDIA_TYPE } from '../../av-moderation/constants';
 import { isForceMuted } from '../../av-moderation/functions';
+import { isCameraAllowed, isMicrophoneAllowed } from '../../media-permissions/functions';
 import { APP_STATE_CHANGED } from '../../mobile/background/actionTypes';
 import { showWarningNotification } from '../../notifications/actions';
 import { NOTIFICATION_TIMEOUT_TYPE } from '../../notifications/constants';
@@ -109,7 +110,7 @@ MiddlewareRegistry.register(store => next => action => {
         const state = store.getState();
         const participant = getLocalParticipant(state);
 
-        if (!action.muted && isForceMuted(participant, AVM_MEDIA_TYPE.AUDIO, state)) {
+        if (!action.muted && (isForceMuted(participant, AVM_MEDIA_TYPE.AUDIO, state) || !isMicrophoneAllowed(state))) {
             return;
         }
         break;
@@ -143,7 +144,8 @@ MiddlewareRegistry.register(store => next => action => {
         const state = store.getState();
         const participant = getLocalParticipant(state);
 
-        if (!action.muted && isForceMuted(participant, AVM_MEDIA_TYPE.VIDEO, state)) {
+        // The token decides whether this person may turn the camera on at all (academy dashboard setting).
+        if (!action.muted && (isForceMuted(participant, AVM_MEDIA_TYPE.VIDEO, state) || !isCameraAllowed(state))) {
             return;
         }
         break;

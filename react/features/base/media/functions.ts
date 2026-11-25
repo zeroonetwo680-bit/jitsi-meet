@@ -74,6 +74,11 @@ function _isVideoMutedByAuthority(
  * @returns {boolean} - The computed startWithAudioMuted value that will be used.
  */
 export function getStartWithAudioMuted(stateful: IStateful) {
+    // Academy build: when the server says start muted, a choice remembered in this browser cannot override it.
+    if (toState(stateful)['features/base/config'].startWithAudioMuted === true) {
+        return true;
+    }
+
     return Boolean(getPropertyValue(stateful, 'startWithAudioMuted', START_WITH_AUDIO_VIDEO_MUTED_SOURCES))
         || Boolean(getPropertyValue(stateful, 'startSilent', START_WITH_AUDIO_VIDEO_MUTED_SOURCES));
 }
@@ -85,6 +90,11 @@ export function getStartWithAudioMuted(stateful: IStateful) {
  * @returns {boolean} - The computed startWithVideoMuted value that will be used.
  */
 export function getStartWithVideoMuted(stateful: IStateful) {
+    // Academy build: when the server says start with the camera off, a choice remembered in this browser cannot override it.
+    if (toState(stateful)['features/base/config'].startWithVideoMuted === true) {
+        return true;
+    }
+
     return Boolean(getPropertyValue(stateful, 'startWithVideoMuted', START_WITH_AUDIO_VIDEO_MUTED_SOURCES));
 }
 
