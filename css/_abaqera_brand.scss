@@ -1,0 +1,161 @@
+/**
+ * Geniuses (العباقرة) look for the welcome page: same palette, font and shapes as the mobile app and the dashboard.
+ * navy #0E2A47 / deep navy #0A1F38, blue #1F6FD1, teal #14A38B, Cairo.
+ */
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/cairo-arabic-400-normal.woff2') format('woff2');
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/cairo-latin-400-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/cairo-arabic-700-normal.woff2') format('woff2');
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/cairo-latin-700-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url('../fonts/cairo-arabic-800-normal.woff2') format('woff2');
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url('../fonts/cairo-latin-800-normal.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
+$brandNavy: #0e2a47;
+$brandNavyDeep: #0a1f38;
+$brandBlue: #1f6fd1;
+$brandBlueDark: #185cac;
+$brandTeal: #14a38b;
+$brandOnDark: #c6d3e0;
+
+body.welcome-page {
+    background: $brandNavyDeep;
+}
+
+.welcome {
+    background-color: $brandNavyDeep;
+    font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    .header {
+        // Same two soft glows as the dashboard's sign-in page, on the app's navy.
+        background-color: $brandNavy;
+        background-image:
+            radial-gradient(circle at 18% 12%, rgba($brandBlue, 0.45), transparent 42%),
+            radial-gradient(circle at 85% 90%, rgba($brandTeal, 0.32), transparent 45%),
+            linear-gradient(160deg, $brandNavy, $brandNavyDeep);
+        display: flex;
+        flex: 1;
+        min-height: 100dvh;
+        padding: 24px 16px;
+
+        .header-image,
+        .header-watermark-container {
+            display: none;
+        }
+
+        .header-container {
+            justify-content: center;
+            margin: auto;
+            max-width: 560px;
+            text-align: center;
+        }
+
+        .header-text-title {
+            color: #fff;
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0;
+
+            // The app's logo above the name.
+            &::before {
+                background: url('../images/abaqera-logo.svg') center / contain no-repeat;
+                border-radius: 22px;
+                box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+                content: '';
+                display: block;
+                height: 88px;
+                margin: 0 auto 20px;
+                width: 88px;
+            }
+        }
+
+        .header-text-subtitle {
+            color: $brandOnDark;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 6px 0 24px;
+        }
+
+        .lectures-hint {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0 0 20px;
+            max-width: 440px;
+            padding: 14px 18px;
+        }
+    }
+
+    .welcome-page-button {
+        background: $brandBlue;
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 12px 28px;
+        text-decoration: none;
+
+        &:hover {
+            background: $brandBlueDark;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba($brandTeal, 0.7);
+            outline-offset: 2px;
+        }
+    }
+
+    // The empty card area under the hero (no recent list / calendar on this server).
+    .welcome-cards-container {
+        display: none;
+    }
+}

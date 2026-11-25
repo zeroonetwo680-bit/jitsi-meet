@@ -35,3 +35,5 @@ COPY --from=build /out/ /usr/share/jitsi-meet/
 
 # Course defaults (no camera button, muted start). Picked up by the image's /config handling.
 COPY docker/custom-config.js /config/custom-config.js
+# Geniuses branding (name, logo, welcome page switches); appended to the generated interface_config.js.
+COPY docker/custom-interface_config.js /config/custom-interface_config.js

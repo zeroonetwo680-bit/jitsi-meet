@@ -1844,6 +1844,7 @@
             "audio": "Voice",
             "video": "Video"
         },
+        "backToPlatform": "Back to the platform",
         "calendar": "Calendar",
         "connectCalendarButton": "Connect your calendar",
         "connectCalendarText": "Connect your calendar to view all your meetings in {{app}}. Plus, add {{provider}} meetings to your calendar and start them with one click.",
@@ -1851,11 +1852,12 @@
         "getHelp": "Get help",
         "go": "GO",
         "goSmall": "GO",
-        "headerSubtitle": "Secure and high quality meetings",
-        "headerTitle": "Jitsi Meet",
+        "headerSubtitle": "Live lecture rooms",
+        "headerTitle": "Geniuses",
         "info": "Dial-in info",
         "jitsiOnMobile": "Jitsi on mobile – download our apps and start a meeting from anywhere",
         "join": "CREATE / JOIN",
+        "lecturesHint": "Open your lecture link from the Geniuses app or from your platform dashboard to join.",
         "logo": {
             "calendar": "Calendar logo",
             "desktopPreviewThumbnail": "Desktop preview thumbnail",

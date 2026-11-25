@@ -24,6 +24,21 @@ import Tabs from './Tabs';
 export const ROOM_NAME_VALIDATE_PATTERN_STR = '^[^?&:\u0022\u0027%#]+$';
 
 /**
+ * The optional "back to the platform" address (interfaceConfig.PLATFORM_URL). Anything but an https address is ignored.
+ *
+ * @returns {string|undefined}
+ */
+function getPlatformUrl(): string | undefined {
+    const value = interfaceConfig.PLATFORM_URL;
+
+    try {
+        return value && new URL(value).protocol === 'https:' ? value : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+/**
  * The Web container rendering the welcome page.
  *
  * @augments AbstractWelcomePage
@@ -191,6 +206,7 @@ class WelcomePage extends AbstractWelcomePage<IProps> {
     override render() {
         const { _moderatedRoomServiceUrl, t } = this.props;
         const { DEFAULT_WELCOME_PAGE_LOGO_URL, DISPLAY_WELCOME_FOOTER } = interfaceConfig;
+        const platformUrl = getPlatformUrl();
         const showAdditionalCard = this._shouldShowAdditionalCard();
         const showAdditionalContent = this._shouldShowAdditionalContent();
         const showAdditionalToolbarContent = this._shouldShowAdditionalToolbarContent();
@@ -228,37 +244,17 @@ class WelcomePage extends AbstractWelcomePage<IProps> {
                         <span className = 'header-text-subtitle'>
                             {t('welcomepage.headerSubtitle')}
                         </span>
-                        <div id = 'enter_room'>
-                            <div className = 'join-meeting-container'>
-                                <div className = 'enter-room-input-container'>
-                                    <form onSubmit = { this._onFormSubmit }>
-                                        <input
-                                            aria-disabled = 'false'
-                                            aria-label = { t('welcomepage.accessibilityLabel.roomname') }
-                                            autoFocus = { true }
-                                            className = 'enter-room-input'
-                                            id = 'enter_room_field'
-                                            onChange = { this._onRoomChange }
-                                            pattern = { ROOM_NAME_VALIDATE_PATTERN_STR }
-                                            placeholder = { this.state.roomPlaceholder }
-                                            ref = { this._setRoomInputRef }
-                                            type = 'text'
-                                            value = { this.state.room } />
-                                    </form>
-                                </div>
-
-                                <button
-                                    aria-disabled = 'false'
-                                    aria-label = { t('welcomepage.startMeeting') }
-                                    className = 'welcome-page-button'
-                                    id = 'enter_room_button'
-                                    onClick = { this._onFormSubmit }
-                                    tabIndex = { 0 }
-                                    type = 'button'>
-                                    {t('welcomepage.startMeeting')}
-                                </button>
-                            </div>
-                        </div>
+                        <p className = 'lectures-hint'>
+                            {t('welcomepage.lecturesHint')}
+                        </p>
+                        {platformUrl && (
+                            <a
+                                className = 'welcome-page-button platform-link'
+                                href = { platformUrl }
+                                rel = 'noopener noreferrer'>
+                                {t('welcomepage.backToPlatform')}
+                            </a>
+                        )}
                         {this._titleHasNotAllowCharacter && (
                             <div
                                 className = 'not-allow-title-character-div'
