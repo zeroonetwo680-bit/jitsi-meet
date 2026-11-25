@@ -24,6 +24,15 @@ RUN mkdir -p /out/css /out/scripts \
  && cp css/all.css /out/css/ \
  && cp resources/robots.txt /out/
 
+# Cache busting: the pages load the bundles with a fixed `?v=139` and the CSS with no version, so Cloudflare and
+# browsers keep serving an old build for hours after a deploy. Stamp every page with a hash of this build instead.
+RUN VER=$(cat /out/libs/app.bundle.min.js /out/css/all.css | sha256sum | cut -c1-12) \
+ && find /out -maxdepth 2 -name '*.html' -exec sed -i \
+      -e "s/?v=139\"/?v=${VER}\"/g" \
+      -e "s#href=\"css/all.css\"#href=\"css/all.css?v=${VER}\"#g" {} + \
+ && grep -q "app.bundle.min.js?v=${VER}" /out/index.html \
+ && grep -q "css/all.css?v=${VER}" /out/index.html
+
 # ---------- Stage 2: official jitsi/web image + our custom frontend ----------
 # Keep this tag in sync with JITSI_TAG used for prosody/jicofo/jvb in docker-compose.yml.
 # (Not an ARG on purpose: Coolify's Dockerfile mode injects ARGs and breaks ARG-before-FROM.)
