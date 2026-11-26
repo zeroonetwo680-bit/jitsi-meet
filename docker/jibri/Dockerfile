@@ -6,3 +6,7 @@ FROM jitsi/jibri:stable
 COPY finalize.sh /opt/abaqera/finalize.sh
 USER root
 RUN chmod 0755 /opt/abaqera/finalize.sh
+
+# Start-up diagnostics: "ABAQERA-CHECK OK|FAIL|WARN" lines in the jibri log say why recording would fail.
+COPY abaqera-check.sh /etc/cont-init.d/99-abaqera-check
+RUN sed -i 's/\r$//' /etc/cont-init.d/99-abaqera-check && chmod 0755 /etc/cont-init.d/99-abaqera-check
