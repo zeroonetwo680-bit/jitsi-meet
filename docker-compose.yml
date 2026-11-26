@@ -104,6 +104,9 @@ services:
       - lecture-recordings:/recordings
     environment:
       <<: *common-env
+      # Jibri's Chrome opens <PUBLIC_URL>/<room>. Without it Jibri uses https://<XMPP_DOMAIN> (meet.jitsi), which does
+      # not resolve, and every recording fails to start.
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL, e.g. https://meet.example.com}
       JIBRI_XMPP_PASSWORD: ${SERVICE_PASSWORD_JIBRI}
       JIBRI_RECORDER_PASSWORD: ${SERVICE_PASSWORD_RECORDER}
       JIBRI_RECORDING_DIR: /config/recordings
