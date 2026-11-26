@@ -83,8 +83,10 @@ body.welcome-page {
         min-height: 100dvh;
         padding: 24px 16px;
 
+        // No settings gear here: devices and name are chosen in the lecture's pre-join screen, and the token sets the name.
         .header-image,
-        .header-watermark-container {
+        .header-watermark-container,
+        .welcome-page-settings {
             display: none;
         }
 
