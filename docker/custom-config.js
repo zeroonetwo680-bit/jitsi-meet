@@ -12,6 +12,21 @@ config.defaultLanguage = 'ar';
 // ("Lecture room settings") and travels in the token's context.features. The buttons below are hidden for
 // anyone the token does not allow (react/features/media-permissions/functions.ts); without a token the
 // camera stays hidden and off.
+// The instructor starts and stops the lecture recording from the main toolbar, not from the "more" menu. Buttons a
+// participant may not use (students: camera, screen share, recording) are skipped and the next button takes the slot.
+config.mainToolbarButtons = [
+    [ 'microphone', 'camera', 'desktop', 'recording', 'chat', 'raisehand', 'participants-pane', 'tileview' ],
+    [ 'microphone', 'camera', 'desktop', 'recording', 'chat', 'raisehand', 'participants-pane' ],
+    [ 'microphone', 'camera', 'recording', 'chat', 'raisehand', 'participants-pane' ],
+    [ 'microphone', 'camera', 'recording', 'chat', 'participants-pane' ],
+    [ 'microphone', 'camera', 'recording', 'chat' ],
+    [ 'microphone', 'recording', 'chat' ],
+    [ 'microphone', 'recording' ]
+];
+
+// Everyone sees the recording label and the start / stop notifications.
+config.hideRecordingLabel = false;
+
 config.toolbarButtons = [
     'microphone',
     'camera',
